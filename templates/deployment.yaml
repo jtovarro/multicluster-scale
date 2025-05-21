@@ -21,7 +21,7 @@ spec:
             - "--cpu"
             - "8"
             - "--timeout"
-            - "300s"
+            - "100s"
           ports:
             - containerPort: 8080
               protocol: TCP
