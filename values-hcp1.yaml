@@ -2,5 +2,5 @@ tenant:
   name: tst-11
 
 hpa: false
-repmin: 0
-repmax: 0
+repmin: 2
+repmax: 4
