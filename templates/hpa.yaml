@@ -1,40 +1,25 @@
-kind: HorizontalPodAutoscaler
+---
 apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
 metadata:
-  name: hpa-{{ $.Values.tenant.name }}
+  name: {{ $.Values.tenant.name }}-hpa
   namespace: {{ $.Values.tenant.name }}
 spec:
   scaleTargetRef:
-    kind: Deployment
-    name: {{ $.Values.tenant.name }}
     apiVersion: apps/v1
-  minReplicas: 1
-  maxReplicas: 3
+    kind: Deployment
+    name: {{ $.Values.tenant.name }}-stressed
+  minReplicas: 2
+  maxReplicas: 4
   metrics:
     - type: Resource
       resource:
-        name: memory
+        name: cpu
         target:
-          type: AverageValue
-          averageValue: 250Mi
+          type: Utilization
+          averageUtilization: 70
   behavior:
     scaleUp:
       stabilizationWindowSeconds: 60
-      selectPolicy: Max
-      policies:
-        - type: Pods
-          value: 4
-          periodSeconds: 15
-        - type: Percent
-          value: 100
-          periodSeconds: 15
     scaleDown:
-      stabilizationWindowSeconds: 120
-      selectPolicy: Max
-      policies:
-        - type: Pods
-          value: 4
-          periodSeconds: 60
-        - type: Percent
-          value: 10
-          periodSeconds: 60
+      stabilizationWindowSeconds: 60

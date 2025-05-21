@@ -1,26 +1,33 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ $.Values.tenant.name }}
+  name: {{ $.Values.tenant.name }}-stressed
   namespace: {{ $.Values.tenant.name }}
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
-      app: {{ $.Values.tenant.name }}
+      app: {{ $.Values.tenant.name }}-stressed
   template:
     metadata:
       labels:
-        app: {{ $.Values.tenant.name }}
+        app: {{ $.Values.tenant.name }}-stressed
     spec:
       containers:
-        - name: container-{{ $.Values.tenant.name }}
-          image: docker.io/appropriate/curl
-          command: ["sleep", "3600"]
+        - name: stress
+          image: polinux/stress
+          args:
+            - "--cpu"
+            - "8"
+            - "--timeout"
+            - "300s"
+          ports:
+            - containerPort: 8080
+              protocol: TCP
           resources:
             requests:
               cpu: "100m"
-              memory: "64Mi"
             limits:
-              cpu: "200m"
-              memory: "128Mi"
+              cpu: "500m"
+          imagePullPolicy: Always
