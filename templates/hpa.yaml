@@ -1,3 +1,4 @@
+{{- if .Values.hpa }}
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
@@ -9,8 +10,8 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: {{ $.Values.tenant.name }}-stressed
-  minReplicas: 2
-  maxReplicas: 4
+  minReplicas: {{ $.Values.repmin }}
+  maxReplicas: {{ $.Values.repmax }}
   metrics:
     - type: Resource
       resource:
@@ -23,3 +24,4 @@ spec:
       stabilizationWindowSeconds: 60
     scaleDown:
       stabilizationWindowSeconds: 60
+{{- end }}
