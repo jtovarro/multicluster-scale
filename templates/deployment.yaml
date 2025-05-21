@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $.Values.tenant.name }}
+  namespace: {{ $.Values.tenant.name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ $.Values.tenant.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ $.Values.tenant.name }}
+    spec:
+      containers:
+        - name: container-{{ $.Values.tenant.name }}
+          image: docker.io/appropriate/curl
+          command: ["sleep", "3600"]
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "64Mi"
+            limits:
+              cpu: "200m"
+              memory: "128Mi"
