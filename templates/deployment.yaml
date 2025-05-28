@@ -18,7 +18,7 @@ spec:
         - name: stress
           image: polinux/stress-ng:latest
           command: ["/bin/sh"]
-          args: ["-c", "stress-ng --cpu 8 --timeout 300s && sleep infinity"]
+          args: ["-c", "stress-ng --cpu 8 --timeout 60s && sleep infinity"]
           ports:
             - containerPort: 8080
               protocol: TCP
