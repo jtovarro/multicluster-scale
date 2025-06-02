@@ -3,6 +3,6 @@ tenant:
 
 VM: true
 hpaVM: true
-hpa: true
+hpa: false
 repmin: 2
 repmax: 5
