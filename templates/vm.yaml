@@ -1,0 +1,90 @@
+{{- if .Values.VM }}
+---
+apiVersion: pool.kubevirt.io/v1alpha1
+kind: VirtualMachinePool
+metadata:
+  name: {{ $.Values.tenant.name }}-vm-pool
+  namespace: {{ $.Values.tenant.name }}
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      kubevirt.io/vmpool: {{ $.Values.tenant.name }}-vm-pool
+  virtualMachineTemplate:
+    metadata:
+      creationTimestamp: null
+      labels:
+        kubevirt.io/vmpool: {{ $.Values.tenant.name }}-vm-pool
+    spec:
+      dataVolumeTemplates:
+        - apiVersion: cdi.kubevirt.io/v1beta1
+          kind: DataVolume
+          metadata:
+            creationTimestamp: null
+            name: {{ $.Values.tenant.name }}-vm-pool
+          spec:
+            sourceRef:
+              kind: DataSource
+              name: centos-stream9
+              namespace: openshift-virtualization-os-images
+            storage:
+              resources:
+                requests:
+                  storage: 30Gi
+      runStrategy: Always
+      template:
+        metadata:
+          annotations:
+            kubevirt.io/vmpool: {{ $.Values.tenant.name }}-vm-pool
+            vm.kubevirt.io/flavor: small
+            vm.kubevirt.io/os: centos-stream9
+            vm.kubevirt.io/workload: server
+          creationTimestamp: null
+          labels:
+            kubevirt.io/size: small
+            kubevirt.io/vmpool: {{ $.Values.tenant.name }}-vm-pool
+        spec:
+          architecture: amd64
+          domain:
+            cpu:
+              cores: 1
+              sockets: 1
+              threads: 1
+            devices:
+              disks:
+                - disk:
+                    bus: virtio
+                  name: rootdisk
+                - disk:
+                    bus: virtio
+                  name: cloudinitdisk
+              interfaces:
+                - masquerade: {}
+                  model: virtio
+                  name: default
+              rng: {}
+            machine:
+              type: pc-q35-rhel9.4.0
+            memory:
+              guest: 2Gi
+            resources:
+              requests:
+                memory: 2Gi
+          networks:
+            - name: default
+              pod: {}
+          terminationGracePeriodSeconds: 180
+          volumes:
+            - dataVolume:
+                name: {{ $.Values.tenant.name }}-vm-pool
+              name: rootdisk
+            - cloudInitNoCloud:
+                userData: |
+                  #cloud-config
+                  user: centos
+                  password: centos
+                  chpasswd:
+                    expire: false
+                  packages:
+                    - stress-ng
+              name: cloudinitdisk
