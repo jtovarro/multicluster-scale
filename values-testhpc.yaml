@@ -1,5 +1,5 @@
 tenant:
-  name: tst-11
+  name: tst-12
 
 VM: true
 hpaVM: true
