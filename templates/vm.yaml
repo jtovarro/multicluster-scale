@@ -88,3 +88,4 @@ spec:
                   packages:
                     - stress-ng
               name: cloudinitdisk
+{{- end }}

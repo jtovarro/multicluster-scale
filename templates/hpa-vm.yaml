@@ -19,3 +19,4 @@ spec:
     apiVersion: pool.kubevirt.io/v1alpha1
     kind: VirtualMachinePool
     name: {{ $.Values.tenant.name }}-vm-pool
+{{- end }}
