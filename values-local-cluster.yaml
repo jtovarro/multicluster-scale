@@ -1,0 +1,6 @@
+tenant:
+  name: tst-11
+
+hpa: true
+repmin: 2
+repmax: 5

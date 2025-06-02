@@ -32,7 +32,7 @@ metadata:
   name: {{ $.Values.tenant.name }}-vm-pool-hpa
   namespace: {{ $.Values.tenant.name }}
 spec:
-  maxReplicas: 5
+  maxReplicas: {{ $.Values.repmax }}
   metrics:
     - type: Resource
       resource:
@@ -40,7 +40,7 @@ spec:
         target:
           type: Utilization
           averageUtilization: 60
-  minReplicas: 2
+  minReplicas: {{ $.Values.repmin }}
   scaleTargetRef:
     apiVersion: pool.kubevirt.io/v1alpha1
     kind: VirtualMachinePool
