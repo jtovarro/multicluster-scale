@@ -25,3 +25,23 @@ spec:
     scaleDown:
       stabilizationWindowSeconds: 60
 {{- end }}
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ $.Values.tenant.name }}-vm-pool-hpa
+  namespace: {{ $.Values.tenant.name }}
+spec:
+  maxReplicas: 5
+  metrics:
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 60
+  minReplicas: 2
+  scaleTargetRef:
+    apiVersion: pool.kubevirt.io/v1alpha1
+    kind: VirtualMachinePool
+    name: {{ $.Values.tenant.name }}-vm-pool
